@@ -5,6 +5,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 
 const ConnectWallet = () => {
     const [account, setAccount] = useState('')
+    const [ensName, setEnsName] = useState(null)
     const [connection, setConnection] = useState(false)
     const [loggedIn, setLoggedIn] = useState(false)
 
@@ -45,7 +46,10 @@ const ConnectWallet = () => {
       const signature = await signer.signMessage(user.nonce.toString())
       const response = await fetch(`/api/verify?address=${account}&signature=${signature}`)
       const data = await response.json()
-      setLoggedIn(data.authenticated)
+      const address = await signer.getAddress();
+      const ensName = await provider.lookupAddress(address);
+      setEnsName(ensName);
+      setLoggedIn(data.authenticated);
     }
 
     return(
@@ -59,7 +63,7 @@ const ConnectWallet = () => {
             </div>
           )}
           {
-            loggedIn && <h1>Welcome, {account}</h1>
+            loggedIn && <h1>Welcome, {ensName ? ensName : account}</h1>
           }
         </div>
     )
