@@ -52,37 +52,24 @@ const ConnectWallet = () => {
       setLoggedIn(data.authenticated);
     }
 
-    return(
-        <div style={container}>
-          {
-            !connection && <button style={button} onClick={connect}> Connect Wallet</button>
-          }
+    return (
+      <main className="flex h-screen text-center">
+        <div className="m-auto md:w-1/2">
+          <div className="grid grid-cols-1 lg:p-10 lg:bg-base-200 rounded-box mb-5">
+          { !connection && (
+              <button className="btn btn-primary" onClick={connect}> Connect Wallet</button>
+          )}
           { connection && !loggedIn && (
-            <div>
-              <button style={button} onClick={signIn}>Sign In</button>
-            </div>
+              <button className="btn btn-primary" onClick={signIn}>Sign In</button>
           )}
           {
-            loggedIn && <h1>Welcome, {ensName ? ensName : account}</h1>
-          }
+            loggedIn && (
+              <h1 className="text-2xl font-bold lg:text-4xl">Welcome, {ensName ? ensName : account}</h1>
+          )}
+          </div>
         </div>
+      </main>
     )
-}
-
-const container = {
-  width: '900px',
-  margin: '50px auto'
-}
-
-const button = {
-  width: '100%',
-  margin: '5px',
-  padding: '20px',
-  border: 'none',
-  backgroundColor: 'black',
-  color: 'white',
-  fontSize: 16,
-  cursor: 'pointer'
 }
 
 export default ConnectWallet
