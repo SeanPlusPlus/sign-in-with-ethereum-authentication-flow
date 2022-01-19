@@ -1,13 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { ethers } from 'ethers'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
+import { GlobalContext } from '../context/GlobalState';
 
 const ConnectWallet = () => {
-    const [account, setAccount] = useState('')
-    const [ensName, setEnsName] = useState(null)
-    const [connection, setConnection] = useState(false)
-    const [loggedIn, setLoggedIn] = useState(false)
+    const { user, setUser } = useContext(GlobalContext);
+    const {
+      loggedIn,
+      ensName,
+      address,
+      connection,
+      account,
+     } = user;
 
     async function getWeb3Modal() {
       let Torus = (await import('@toruslabs/torus-embed')).default
@@ -34,8 +39,7 @@ const ConnectWallet = () => {
       const connection = await web3Modal.connect()
       const provider = new ethers.providers.Web3Provider(connection)
       const accounts = await provider.listAccounts()
-      setConnection(connection)
-      setAccount(accounts[0])
+      setUser({ ...user, connection, account: accounts[0] })
     }
 
     async function signIn() {
@@ -48,8 +52,12 @@ const ConnectWallet = () => {
       const data = await response.json()
       const address = await signer.getAddress();
       const ensName = await provider.lookupAddress(address);
-      setEnsName(ensName);
-      setLoggedIn(data.authenticated);
+      setUser({ 
+        ...user,
+        ensName,
+        address,
+        loggedIn: data.authenticated,
+      })
     }
 
     return (
@@ -64,7 +72,7 @@ const ConnectWallet = () => {
           )}
           {
             loggedIn && (
-              <h1 className="text-2xl font-bold lg:text-4xl">Welcome, {ensName ? ensName : account}</h1>
+              <h1 className="text-2xl font-bold lg:text-4xl">Welcome, {ensName ? ensName : address}</h1>
           )}
           </div>
         </div>
