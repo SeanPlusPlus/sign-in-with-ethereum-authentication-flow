@@ -1,8 +1,10 @@
 import React, {
   createContext,
-  useReducer
+  useReducer,
+  useEffect,
 } from 'react';
 import AppReducer from './AppReducer';
+import { log } from '../utils/logger'
 
 const initialState = {
   user: {
@@ -25,6 +27,10 @@ export const GlobalProvider = ({
       payload: data 
     });
   }
+
+  useEffect(() => {
+    log('state', 'green', state);
+  }, [state])
 
   return ( <GlobalContext.Provider value = {
       {

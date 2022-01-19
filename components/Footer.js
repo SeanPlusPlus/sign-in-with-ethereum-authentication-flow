@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Footer = () => {
   return (
-    <footer className="text-center pb-20">
+    <footer className="text-center pt-20">
       Powered by 
       <a
         href="https://twitter.com/seanplusplus"
