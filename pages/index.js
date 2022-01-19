@@ -1,8 +1,10 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
+import Head from 'next/head'
 import { ethers } from 'ethers'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
-import { GlobalContext } from '../context/GlobalState';
+import { GlobalContext } from '../context/GlobalState'
+import { Footer } from '../components/Footer'
 
 const ConnectWallet = () => {
     const { user, setUser } = useContext(GlobalContext);
@@ -61,22 +63,34 @@ const ConnectWallet = () => {
     }
 
     return (
-      <main className="flex h-screen text-center">
-        <div className="m-auto md:w-1/2">
-          <div className="grid grid-cols-1 lg:p-10 lg:bg-base-200 rounded-box mb-5">
-          { !connection && (
-              <button className="btn btn-primary" onClick={connect}> Connect Wallet</button>
-          )}
-          { connection && !loggedIn && (
-              <button className="btn btn-primary" onClick={signIn}>Sign In</button>
-          )}
-          {
-            loggedIn && (
-              <h1 className="text-2xl font-bold lg:text-4xl">Welcome, {ensName ? ensName : address}</h1>
-          )}
+
+
+      <div className="container mx-auto px-4">
+        <Head>
+          <title>Ethereum Auth Demo</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+          <meta name="description" content="Shopping Cart" />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <main className="flex h-screen text-center">
+          <div className="m-auto md:w-1/2">
+            <div className="grid grid-cols-1 lg:p-10 lg:bg-base-200 rounded-box mb-5">
+            { !connection && (
+                <button className="btn btn-primary" onClick={connect}>Connect Wallet</button>
+            )}
+            { connection && !loggedIn && (
+                <button className="btn btn-primary" onClick={signIn}>Sign In</button>
+            )}
+            {
+              loggedIn && (
+                <h1 className="text-2xl font-bold lg:text-4xl">Welcome, {ensName ? ensName : address}</h1>
+            )}
+            </div>
+            <Footer />
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     )
 }
 
