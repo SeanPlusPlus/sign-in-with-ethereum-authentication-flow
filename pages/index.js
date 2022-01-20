@@ -52,14 +52,14 @@ const ConnectWallet = () => {
     }
 
     async function signIn() {
-      setUser({
-        isSigningIn: true,
-      });
       const authData = await fetch(`/api/authenticate?address=${account}`)
       const user = await authData.json()
       const provider = new ethers.providers.Web3Provider(connection)
       const signer = provider.getSigner()
       const signature = await signer.signMessage(user.nonce.toString())
+      setUser({
+        isSigningIn: true,
+      });
       const response = await fetch(`/api/verify?address=${account}&signature=${signature}`)
       const data = await response.json()
       const address = await signer.getAddress();
