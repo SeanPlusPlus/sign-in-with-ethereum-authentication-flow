@@ -18,7 +18,7 @@ const Main = () => {
     connection,
     account,
     name,
-    } = user;
+  } = user;
 
   async function signIn() {
     const authData = await fetch(`/api/authenticate?address=${account}`)
