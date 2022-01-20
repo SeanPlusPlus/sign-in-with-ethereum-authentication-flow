@@ -1,16 +1,16 @@
 import React, { useContext } from 'react'
 import { ethers } from 'ethers'
-import Web3Modal from 'web3modal'
-import WalletConnectProvider from '@walletconnect/web3-provider'
 import { GlobalContext } from '../context/GlobalState'
 import { getName } from '../utils/name'
 
+// components
 import { Header } from '../components/Header'
 import { Nav } from '../components/Nav'
 import { Footer } from '../components/Footer'
 import { Loading } from '../components/Loading'
+import { ConnectWallet } from '../components/ConnectWallet'
 
-const ConnectWallet = () => {
+const Main = () => {
   const { user, setUser } = useContext(GlobalContext);
   const {
     isSigningIn,
@@ -19,37 +19,6 @@ const ConnectWallet = () => {
     account,
     name,
     } = user;
-
-  async function getWeb3Modal() {
-    let Torus = (await import('@toruslabs/torus-embed')).default
-    const web3Modal = new Web3Modal({
-      network: 'mainnet',
-      cacheProvider: false,
-      providerOptions: {
-        torus: {
-          package: Torus
-        },
-        walletconnect: {
-          package: WalletConnectProvider,
-          options: {
-            infuraId: '8cf3cad623da43f9a84ab5ac94230cf6'
-          },
-        },
-      },
-    })
-    return web3Modal
-  }
-
-  async function connect() {
-    const web3Modal = await getWeb3Modal()
-    const connection = await web3Modal.connect()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const accounts = await provider.listAccounts()
-    setUser({
-      connection,
-      account: accounts[0],
-    });
-  }
 
   async function signIn() {
     const authData = await fetch(`/api/authenticate?address=${account}`)
@@ -81,20 +50,20 @@ const ConnectWallet = () => {
       <main className="flex text-center pt-10">
         <div className="m-auto md:w-1/2">
           <div className="grid grid-cols-1 lg:p-10 lg:bg-base-200 rounded-box mb-5">
-          { !connection && (
-              <button className="btn btn-primary" onClick={connect}>Connect Wallet</button>
-          )}
-          { connection && !loggedIn && !isSigningIn && (
-              <button className="btn btn-primary" onClick={signIn}>Sign In</button>
-          )}
-          {
-            isSigningIn && (
-              <Loading />
-          )}
-          {
-            loggedIn && (
-              <h1 className="text-2xl font-bold lg:text-4xl">Welcome, {name}</h1>
-          )}
+            { !connection && (
+                <ConnectWallet />
+            )}
+            { connection && !loggedIn && !isSigningIn && (
+                <button className="btn btn-primary" onClick={signIn}>Sign In</button>
+            )}
+            {
+              isSigningIn && (
+                <Loading />
+            )}
+            {
+              loggedIn && (
+                <h1 className="text-2xl font-bold lg:text-4xl">Welcome, {name}</h1>
+            )}
           </div>
         </div>
       </main>
@@ -103,4 +72,4 @@ const ConnectWallet = () => {
   )
 }
 
-export default ConnectWallet
+export default Main 
