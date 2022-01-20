@@ -1,7 +1,5 @@
 import React, { useContext } from 'react'
-import { ethers } from 'ethers'
 import { GlobalContext } from '../context/GlobalState'
-import { getName } from '../utils/name'
 
 // components
 import { Header } from '../components/Header'
@@ -9,39 +7,16 @@ import { Nav } from '../components/Nav'
 import { Footer } from '../components/Footer'
 import { Loading } from '../components/Loading'
 import { ConnectWallet } from '../components/ConnectWallet'
+import { SignIn } from '../components/SignIn'
 
 const Main = () => {
-  const { user, setUser } = useContext(GlobalContext);
+  const { user } = useContext(GlobalContext);
   const {
-    isSigningIn,
+    name,
     loggedIn,
     connection,
-    account,
-    name,
+    isSigningIn,
   } = user;
-
-  async function signIn() {
-    const authData = await fetch(`/api/authenticate?address=${account}`)
-    const user = await authData.json()
-    const provider = new ethers.providers.Web3Provider(connection)
-    const signer = provider.getSigner()
-    const signature = await signer.signMessage(user.nonce.toString())
-    setUser({
-      isSigningIn: true,
-    });
-    const response = await fetch(`/api/verify?address=${account}&signature=${signature}`)
-    const data = await response.json()
-    const address = await signer.getAddress();
-    const ensName = await provider.lookupAddress(address);
-    const name = getName({ ensName, address });
-    setUser({ 
-      name,
-      ensName,
-      address,
-      loggedIn: data.authenticated,
-      isSigningIn: false,
-    });
-  }
 
   return (
     <>
@@ -54,7 +29,7 @@ const Main = () => {
                 <ConnectWallet />
             )}
             { connection && !loggedIn && !isSigningIn && (
-                <button className="btn btn-primary" onClick={signIn}>Sign In</button>
+                <SignIn />
             )}
             {
               isSigningIn && (
