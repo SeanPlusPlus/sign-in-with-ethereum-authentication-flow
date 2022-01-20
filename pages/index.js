@@ -3,6 +3,7 @@ import { ethers } from 'ethers'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { GlobalContext } from '../context/GlobalState'
+import { getName } from '../utils/name'
 
 import { Header } from '../components/Header'
 import { Nav } from '../components/Nav'
@@ -55,8 +56,10 @@ const ConnectWallet = () => {
       const data = await response.json()
       const address = await signer.getAddress();
       const ensName = await provider.lookupAddress(address);
+      const name = getName({ ensName, address });
       setUser({ 
         ...user,
+        name,
         ensName,
         address,
         loggedIn: data.authenticated,
