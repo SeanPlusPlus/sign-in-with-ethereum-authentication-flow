@@ -4,6 +4,7 @@ import { GlobalContext } from '../context/GlobalState'
 import { getName } from '../utils/name'
 
 export const SignIn = () => {
+  const { user: { account, connection } } = useContext(GlobalContext);
   const { setUser } = useContext(GlobalContext);
   
   async function signIn() {
