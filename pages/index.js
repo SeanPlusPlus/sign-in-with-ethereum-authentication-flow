@@ -8,11 +8,11 @@ import { Footer } from '../components/Footer'
 import { Loading } from '../components/Loading'
 import { ConnectWallet } from '../components/ConnectWallet'
 import { SignIn } from '../components/SignIn'
+import { Welcome } from '../components/Welcome'
 
 const Main = () => {
   const { user } = useContext(GlobalContext);
   const {
-    name,
     loggedIn,
     connection,
     isSigningIn,
@@ -37,7 +37,7 @@ const Main = () => {
             )}
             {
               loggedIn && (
-                <h1 className="text-2xl font-bold lg:text-4xl">Welcome, {name}</h1>
+                <Welcome />
             )}
           </div>
         </div>
