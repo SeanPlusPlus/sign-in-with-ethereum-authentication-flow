@@ -8,10 +8,12 @@ import { getName } from '../utils/name'
 import { Header } from '../components/Header'
 import { Nav } from '../components/Nav'
 import { Footer } from '../components/Footer'
+import { Loading } from '../components/Loading'
 
 const ConnectWallet = () => {
     const { user, setUser } = useContext(GlobalContext);
     const {
+      isSigningIn,
       loggedIn,
       connection,
       account,
@@ -43,10 +45,16 @@ const ConnectWallet = () => {
       const connection = await web3Modal.connect()
       const provider = new ethers.providers.Web3Provider(connection)
       const accounts = await provider.listAccounts()
-      setUser({ ...user, connection, account: accounts[0] })
+      setUser({
+        connection,
+        account: accounts[0],
+      });
     }
 
     async function signIn() {
+      setUser({
+        isSigningIn: true,
+      });
       const authData = await fetch(`/api/authenticate?address=${account}`)
       const user = await authData.json()
       const provider = new ethers.providers.Web3Provider(connection)
@@ -58,12 +66,12 @@ const ConnectWallet = () => {
       const ensName = await provider.lookupAddress(address);
       const name = getName({ ensName, address });
       setUser({ 
-        ...user,
         name,
         ensName,
         address,
         loggedIn: data.authenticated,
-      })
+        isSigningIn: false,
+      });
     }
 
     return (
@@ -76,8 +84,12 @@ const ConnectWallet = () => {
               { !connection && (
                   <button className="btn btn-primary" onClick={connect}>Connect Wallet</button>
               )}
-              { connection && !loggedIn && (
+              { connection && !loggedIn && !isSigningIn && (
                   <button className="btn btn-primary" onClick={signIn}>Sign In</button>
+              )}
+              {
+                isSigningIn && (
+                  <Loading />
               )}
               {
                 loggedIn && (
